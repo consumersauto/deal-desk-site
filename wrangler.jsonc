@@ -13,5 +13,10 @@
   },
   "compatibility_flags": [
     "nodejs_compat"
+"kv_namespaces": [
+    {
+      "binding": "DEAL_DESK_KV",
+      "id": "a118d7adb5cf434d84fce34b2ae8ba93"
+    }
   ]
 }
