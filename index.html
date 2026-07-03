@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Deal Desk — Promax</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F3F4F8;
+    --paper-line:#D6D9E6;
+    --ink:#262B7A;
+    --ink-soft:#6870A6;
+    --stamp-green:#2E5339;
+    --stamp-red:#9B2C2C;
+    --gold:#E67E22;
+    --panel:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    background-image:
+      linear-gradient(var(--paper-line) 1px, transparent 1px);
+    background-size: 100% 32px;
+  }
+  header{
+    padding:28px 32px 18px;
+    border-bottom:2px solid var(--ink);
+    display:flex; justify-content:space-between; align-items:flex-end;
+  }
+  header h1{
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    font-size:30px;
+    margin:0;
+    letter-spacing:-0.5px;
+  }
+  header .tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+  }
+  .wrap{
+    display:grid;
+    grid-template-columns: 380px 1fr;
+    gap:0;
+    min-height:calc(100vh - 90px);
+  }
+  .panel{
+    background:var(--panel);
+    padding:24px;
+    border-right:2px solid var(--ink);
+  }
+  .field{ margin-bottom:16px; }
+  .field label{
+    display:block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:var(--ink-soft);
+    margin-bottom:5px;
+  }
+  .field input, .field select{
+    width:100%;
+    padding:8px 10px;
+    border:1px solid var(--paper-line);
+    border-bottom:2px solid var(--ink);
+    background:#fff;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    color:var(--ink);
+  }
+  .row2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  fieldset{
+    border:1px dashed var(--paper-line);
+    border-radius:2px;
+    margin:0 0 16px;
+    padding:12px;
+  }
+  legend{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:var(--gold);
+    padding:0 6px;
+  }
+  .checks label{
+    display:flex; align-items:center; gap:6px;
+    font-size:13px; margin-bottom:6px; text-transform:none;
+    letter-spacing:0; color:var(--ink); font-family:'Inter',sans-serif;
+  }
+  .toggle{ display:flex; gap:8px; margin-bottom:14px; }
+  .toggle button{
+    flex:1; padding:8px; border:1px solid var(--ink); background:#fff;
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:1px;
+    cursor:pointer; text-transform:uppercase;
+  }
+  .toggle button.active{ background:var(--ink); color:var(--paper); }
+  #tradeFields{ display:none; }
+  .runbtn{
+    width:100%; padding:13px; margin-top:6px;
+    background:var(--stamp-green); color:#fff; border:none;
+    font-family:'Fraunces',serif; font-weight:600; font-size:16px;
+    cursor:pointer; letter-spacing:0.3px;
+  }
+  .runbtn:hover{ opacity:0.92; }
+  .printbtn{
+    width:100%; padding:10px; margin-top:8px;
+    background:transparent; color:var(--ink); border:1px solid var(--ink);
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:1px;
+    cursor:pointer; text-transform:uppercase;
+  }
+  .updatebtn{
+    background:transparent; border:1px dashed var(--ink-soft); color:var(--ink-soft);
+    font-family:'IBM Plex Mono',monospace; font-size:10px; padding:6px 8px;
+    cursor:pointer; width:100%; margin-top:4px;
+  }
+  .paneltabs{ display:flex; gap:6px; margin-bottom:18px; }
+  .paneltabs button{
+    flex:1; padding:9px; border:1px solid var(--ink); background:#fff; color:var(--ink);
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:1px;
+    cursor:pointer; text-transform:uppercase;
+  }
+  .paneltabs button.active{ background:var(--ink); color:#fff; }
+  .savebtn{
+    width:100%; padding:11px; margin-top:6px;
+    background:var(--gold); color:#fff; border:none;
+    font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:12px;
+    letter-spacing:0.5px; text-transform:uppercase; cursor:pointer;
+  }
+  .savebtn:hover{ opacity:0.9; }
+  .restorebtn{
+    width:100%; padding:9px; margin-top:8px;
+    background:transparent; color:var(--ink-soft); border:1px dashed var(--ink-soft);
+    font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:0.5px;
+    text-transform:uppercase; cursor:pointer;
+  }
+  .assumpToggle{
+    margin-top:18px; font-family:'IBM Plex Mono',monospace; font-size:11px;
+    color:var(--gold); cursor:pointer; border-top:1px dashed var(--paper-line); padding-top:10px;
+    user-select:none;
+  }
+  .assumpToggle:hover{ text-decoration:underline; }
+  .results{ padding:24px 28px; }
+  .report-head{
+    display:flex; justify-content:space-between; margin-bottom:18px;
+    border-bottom:1px solid var(--paper-line); padding-bottom:14px;
+  }
+  .report-head .meta{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--ink-soft); line-height:1.7; }
+  .report-head .meta b{ color:var(--ink); }
+  table{ width:100%; border-collapse:collapse; font-size:12.5px; }
+  th{
+    text-align:left; font-family:'IBM Plex Mono',monospace; font-size:10px;
+    text-transform:uppercase; letter-spacing:0.5px; color:var(--ink-soft);
+    border-bottom:2px solid var(--ink); padding:8px 6px;
+  }
+  td{ padding:8px 6px; border-bottom:1px solid var(--paper-line); font-family:'IBM Plex Mono',monospace; vertical-align:top; }
+  td.veh{ font-family:'Inter',sans-serif; }
+  tr.declined{ opacity:0.55; }
+  tbody tr:hover{ background:#FBF7EC; }
+  #modalOverlay{
+    display:none; position:fixed; inset:0; background:rgba(27,42,65,0.55);
+    align-items:center; justify-content:center; z-index:50;
+  }
+  #modalCard{
+    background:var(--panel); width:520px; max-width:92vw; max-height:86vh; overflow:auto;
+    padding:26px; border:2px solid var(--ink); position:relative;
+  }
+  #modalCard table td{ font-family:'IBM Plex Mono',monospace; font-size:12.5px; padding:5px 0; }
+  #modalClose{
+    position:absolute; top:14px; right:18px; background:none; border:none;
+    font-size:20px; cursor:pointer; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace;
+  }
+  .stamp{
+    display:inline-block; padding:2px 8px; border:2px solid; border-radius:3px;
+    font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:600; letter-spacing:1px;
+    transform:rotate(-2deg);
+  }
+  .stamp.go{ color:var(--stamp-green); border-color:var(--stamp-green); }
+  .stamp.no{ color:var(--stamp-red); border-color:var(--stamp-red); }
+  .stamp.override{ color:var(--gold); border-color:var(--gold); }
+  .reasons{ font-family:'Inter',sans-serif; font-size:10.5px; color:var(--stamp-red); margin-top:3px; }
+  .reasons.override{ color:var(--gold); }
+  .empty{ color:var(--ink-soft); font-family:'IBM Plex Mono',monospace; padding:40px 0; text-align:center; }
+  .assump{
+    margin-top:18px; font-size:11px; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace;
+    border-top:1px dashed var(--paper-line); padding-top:10px; line-height:1.7;
+  }
+  @media print{
+    @page{ size: landscape; margin: 0.4in; }
+    .panel, .printbtn, .updatebtn, header .tag, .assumpToggle, #modalOverlay{ display:none !important; }
+    .wrap{ grid-template-columns:1fr; min-height:0; }
+    body{ background:#fff; }
+    header{ padding:0 0 10px; border-bottom:1.5px solid var(--ink); }
+    header h1{ font-size:20px; }
+    .results{ padding:0; }
+    .report-head{ margin-bottom:10px; }
+    .results table{ table-layout:fixed; width:100%; font-size:8.5px; }
+    .results th, .results td{ padding:3px 3px; word-wrap:break-word; overflow-wrap:break-word; }
+    .results th{ font-size:7.5px; }
+    .results tr{ page-break-inside:avoid; }
+    .results thead{ display:table-header-group; }
+    .results tr.declined{ opacity:0.8; }
+    .results .stamp{ font-size:7px; padding:1px 3px; transform:none; }
+    .results .reasons{ font-size:7px; }
+    .assump{ font-size:8.5px; margin-top:10px; }
+    #printedStamp{ display:block; margin-top:8px; font-size:8.5px; color:var(--ink-soft); }
+    .results th:nth-child(1), .results td:nth-child(1){width:5%;}
+    .results th:nth-child(2), .results td:nth-child(2){width:19%;}
+    .results th:nth-child(3), .results td:nth-child(3){width:6%;}
+    .results th:nth-child(4), .results td:nth-child(4){width:9%;}
+    .results th:nth-child(5), .results td:nth-child(5){width:9%;}
+    .results th:nth-child(6), .results td:nth-child(6){width:8%;}
+    .results th:nth-child(7), .results td:nth-child(7){width:9%;}
+    .results th:nth-child(8), .results td:nth-child(8){width:5%;}
+    .results th:nth-child(9), .results td:nth-child(9){width:8%;}
+    .results th:nth-child(10), .results td:nth-child(10){width:8%;}
+    .results th:nth-child(11), .results td:nth-child(11){width:14%;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Deal Desk</h1>
+  <div class="tag">Promax · F&amp;I Structuring Prototype</div>
+</header>
+
+<div class="wrap">
+  <div class="panel">
+    <div class="paneltabs">
+      <button id="tabBtnDeal" class="active" onclick="showPanelTab('deal')">Deal Setup</button>
+      <button id="tabBtnSettings" onclick="showPanelTab('settings')">Fee Settings</button>
+    </div>
+
+    <div id="dealTab">
+    <div class="row2">
+      <div class="field">
+        <label>First Name</label>
+        <input id="custFirst" placeholder="First">
+      </div>
+      <div class="field">
+        <label>Last Name</label>
+        <input id="custLast" placeholder="Last">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Lender</label>
+      <select id="lender" onchange="onLenderChange()">
+        <option value="ally">Ally Financial — Consumer Retail</option>
+        <option value="fm">F&amp;M Bank — Dealer Finance</option>
+        <option value="cps">CPS — Consumer Portfolio Services</option>
+      </select>
+    </div>
+
+    <div class="field" id="cpsTierField" style="display:none;">
+      <label>CPS Credit Tier</label>
+      <select id="cpsTier" onchange="onCPSTierChange()">
+        <option value="icon">ICON+</option>
+        <option value="upper">Upper — Meta / Pref / SUAL</option>
+        <option value="mid">Mid — ALPL / Alpha</option>
+        <option value="lower">Lower — STD / Delta / FTB</option>
+      </select>
+    </div>
+
+    <fieldset>
+      <legend>Book Value Basis</legend>
+      <div class="checks">
+        <label><input type="checkbox" class="bvSrc" value="nadaT" checked> NADA Clean Trade</label>
+        <label><input type="checkbox" class="bvSrc" value="nadaRetail" checked> NADA Retail</label>
+        <label><input type="checkbox" class="bvSrc" value="kbbL" checked> KBB Lending</label>
+        <label><input type="checkbox" class="bvSrc" value="bbWhClean" checked> Black Book WhSale Clean</label>
+      </div>
+      <div class="toggle">
+        <button data-method="highest" class="active">Use Highest</button>
+        <button data-method="lowest">Use Lowest</button>
+        <button data-method="average">Average</button>
+      </div>
+      <div id="bvLenderNote" style="font-size:11px;color:var(--gold);margin-top:6px;display:none;"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Advance Parameters</legend>
+      <div class="row2">
+        <div class="field"><label>Front End Adv %</label><input id="frontPct" type="number" placeholder="e.g. 130"></div>
+        <div class="field"><label>Total Adv %</label><input id="totalPct" type="number" placeholder="e.g. 135"></div>
+      </div>
+    </fieldset>
+
+    <div class="field"><label>APR %</label><input id="apr" type="number" step="0.01" value="9.99"></div>
+    <div class="field" style="background:#FBF7EC;padding:8px;border:1px dashed var(--paper-line);">
+      <label style="margin-bottom:2px;">Term</label>
+      <div id="termNoteText" style="font-size:11.5px;color:var(--ink-soft);">Auto-selected per vehicle from Ally's term grid (model year, mileage &lt;100k, amount financed &gt;$5,000). No manual entry.</div>
+    </div>
+
+    <div id="lenderFeeNote" style="font-size:11px;color:var(--ink-soft);margin:-10px 0 14px;display:none;"></div>
+
+    <div class="field"><label>Customer Max Payment $</label><input id="maxPmt" type="number" placeholder="e.g. 450"></div>
+    <div class="field"><label>Down Payment $</label><input id="down" type="number" value="0"></div>
+    <div class="field"><label>Bank Fee (DFI) $</label><input id="bankFee" type="number" value="0"></div>
+
+    <fieldset>
+      <legend>Trade-In</legend>
+      <div class="toggle">
+        <button data-trade="no" class="active">No Trade</button>
+        <button data-trade="yes">Trade-In</button>
+      </div>
+      <div id="tradeFields">
+        <div class="field"><label>Trade Allowance $</label><input id="tradeAllow" type="number" value="0"></div>
+        <div class="field"><label>Trade Payoff $</label><input id="tradePayoff" type="number" value="0"></div>
+        <div class="field"><label>ACV $</label><input id="tradeAcv" type="number" value="0"></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Service Contract</legend>
+      <div class="toggle">
+        <button data-sc="no" class="active">None</button>
+        <button data-sc="yes">Include</button>
+      </div>
+      <div id="scFields" style="display:none;">
+        <div class="row2">
+          <div class="field"><label>Sales Price $</label><input id="scPrice" type="number" value="0"></div>
+          <div class="field"><label>Cost $</label><input id="scCost" type="number" value="0"></div>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>GAP</legend>
+      <div class="toggle">
+        <button data-gap="no" class="active">None</button>
+        <button data-gap="yes">Include</button>
+      </div>
+      <div id="gapFields" style="display:none;">
+        <div class="row2">
+          <div class="field"><label>Sales Price $</label><input id="gapPrice" type="number" value="0"></div>
+          <div class="field"><label>Cost $</label><input id="gapCost" type="number" value="0"></div>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Rate Reserve (Dealer Participation)</legend>
+      <div class="toggle">
+        <button data-reserve="none" class="active">None</button>
+        <button data-reserve="flat">Flat $</button>
+        <button data-reserve="pct">% of Amt Financed</button>
+        <button data-reserve="spread">Rate Spread</button>
+      </div>
+      <div id="reserveFlatFields" style="display:none;">
+        <div class="field"><label>Flat Reserve $</label><input id="reserveFlat" type="number" step="25" value="0"></div>
+      </div>
+      <div id="reservePctFields" style="display:none;">
+        <div class="field"><label>Reserve % (typ. 0.5–2.0%)</label><input id="reservePct" type="number" step="0.1" value="1.0"></div>
+      </div>
+      <div id="reserveSpreadFields" style="display:none;">
+        <div class="row2">
+          <div class="field"><label>Buy Rate %</label><input id="buyRate" type="number" step="0.01" value="0"></div>
+          <div class="field"><label>Max Markup %</label><input id="maxMarkup" type="number" step="0.1" value="2.0"></div>
+        </div>
+        <div class="field"><label>Dealer Split %</label><input id="dealerSplit" type="number" step="1" value="70"></div>
+        <div style="font-size:11px;color:var(--ink-soft);">Spread = APR − Buy Rate, capped at Max Markup. Reserve = capped spread × Split % × amount financed.</div>
+      </div>
+    </fieldset>
+
+    <button class="runbtn" onclick="runDeal()">Run Deal Against Inventory</button>
+    <button class="printbtn" onclick="printReport()">Print / Save Report</button>
+    <button class="updatebtn" onclick="document.getElementById('csvBox').style.display='block'">Update Inventory (CSV)</button>
+    <div id="csvBox" style="display:none; margin-top:8px;">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <button class="updatebtn" onclick="document.getElementById('csvFile').click()">Choose Promax CSV File...</button>
+        <input type="file" id="csvFile" accept=".csv,text/csv" style="display:none" onchange="handleCSVFileUpload(event)">
+        <span id="csvFileStatus" style="font-size:10.5px;color:var(--ink-soft);"></span>
+      </div>
+      <div id="csvFileConfirm" style="display:none;margin-top:8px;padding:8px;border:1px dashed var(--gold);font-size:10.5px;color:var(--ink-soft);"></div>
+      <div style="font-size:10px;color:var(--ink-soft);margin:10px 0 4px;">— or paste CSV text below —</div>
+      <textarea id="csvText" rows="4" style="width:100%;font-family:monospace;font-size:10px;" placeholder="Paste new inventory CSV (same column format) here"></textarea>
+      <button class="updatebtn" onclick="updateInventory()">Save Pasted CSV</button>
+    </div>
+    </div>
+
+    <div id="settingsTab" style="display:none;">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);margin-bottom:16px;line-height:1.6;">
+        These defaults apply to every deal run in this tool and are shared across all staff using it. Credit-tier specific figures (CPS APR/LTV/caps by tier) are unaffected and still come from the tier grid.
+      </div>
+
+      <fieldset>
+        <legend>Front-End Fees</legend>
+        <div class="field"><label>Doc Fee $</label><input id="setDocFee" type="number" step="1"></div>
+        <div class="row2">
+          <div class="field"><label>Title $</label><input id="setTitle" type="number" step="0.01"></div>
+          <div class="field"><label>Registration $</label><input id="setReg" type="number" step="0.01"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Tag $</label><input id="setTag" type="number" step="0.01"></div>
+          <div class="field"><label>Online Filing $</label><input id="setOnlineFiling" type="number" step="0.01"></div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Taxes</legend>
+        <div class="row2">
+          <div class="field"><label>Sales Tax %</label><input id="setSalesTax" type="number" step="0.01"></div>
+          <div class="field"><label>Biz License Tax %</label><input id="setBizTax" type="number" step="0.01"></div>
+        </div>
+        <div class="field"><label>Service Contract Tax %</label><input id="setScTax" type="number" step="0.001"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>F&amp;M Bank Defaults</legend>
+        <div class="row2">
+          <div class="field"><label>Processing Fee $</label><input id="setFmProcessing" type="number" step="1"></div>
+          <div class="field"><label>VSI Fee $</label><input id="setFmVsi" type="number" step="1"></div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>CPS Defaults</legend>
+        <div class="field"><label>Assignment Fee $</label><input id="setCpsAssignment" type="number" step="1"></div>
+      </fieldset>
+
+      <button class="savebtn" onclick="saveSettings()">Save Settings</button>
+      <button class="restorebtn" onclick="restoreDefaultSettings()">Restore Factory Defaults</button>
+      <div id="settingsSavedNote" style="display:none;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--stamp-green);margin-top:8px;">Settings saved for all staff.</div>
+    </div>
+  </div>
+
+  <div class="results">
+    <div class="report-head">
+      <div class="meta">
+        <div><b>Customer:</b> <span id="rptName">—</span></div>
+        <div><b>Lender:</b> <span id="rptLender">—</span></div>
+        <div><b>First Payment Due:</b> <span id="rptFirstPmt">—</span></div>
+      </div>
+      <div class="meta" style="text-align:right;" id="rptFeeMeta"></div>
+    </div>
+    <div id="resultsBody"><div class="empty">Enter deal parameters and click "Run Deal" to see eligible inventory.</div></div>
+    <div class="assumpToggle" id="assumpToggle" onclick="toggleAssumptions()">▸ Show Assumptions</div>
+    <div class="assump" id="assumpBody" style="display:none;"></div>
+    <div id="printedStamp" style="display:none;"></div>
+  </div>
+</div>
+
+<div id="modalOverlay" onclick="if(event.target===this)closeDetail()">
+  <div id="modalCard">
+    <button id="modalClose" onclick="closeDetail()">✕</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+const CONST = { DOC_FEE:549, SALES_TAX:0.0415, BIZ_TAX:0.002, TITLE:15, REG:32.75, TAG:3.00, ONLINE_FILING:29.00, SC_TAX:0.02075 };
+const FM_FEES = { PROCESSING:79, VSI:70 };
+const CPS_FEES = { ASSIGNMENT:200 };
+const FACTORY_DEFAULTS = {
+  DOC_FEE:549, SALES_TAX_PCT:4.15, BIZ_TAX_PCT:0.2, TITLE:15, REG:32.75, TAG:3.00, ONLINE_FILING:29.00, SC_TAX_PCT:2.075,
+  FM_PROCESSING:79, FM_VSI:70, CPS_ASSIGNMENT:200
+};
+// Approximate tier defaults read from CPS Franchise Program Guidelines Exhibit 'A' (1/1/26).
+// Rates/fees are described as "as low as" / "vary by credit profile" — these are floors/starting points
+// for staff to adjust, not guaranteed terms. No make-specific rate extensions were found in the document;
+// only vehicle-type distinctions (ICE vs EV age limit, light commercial, and an unspecified "Hot Vehicle" program).
+const CPS_TIERS = {
+  icon:  { label:'ICON+',                         apr:6.00,  ltv:125, maxAmt:75000, minAmt:7500 },
+  upper: { label:'Upper (Meta / Pref / SUAL)',     apr:12.05, ltv:140, maxAmt:55000, minAmt:5000 },
+  mid:   { label:'Mid (ALPL / Alpha)',             apr:12.05, ltv:140, maxAmt:45000, minAmt:5000 },
+  lower: { label:'Lower (STD / Delta / FTB)',      apr:12.05, ltv:140, maxAmt:35000, minAmt:5000 }
+};
+const CPS_BACKEND_CAP = { GAP:1200, SC:3400, COMBINED_FLAT:4400 }; // combined cap = lesser of 50% of value or $4,400
+const EV_KEYWORDS = ['ioniq','bolt','leaf','model 3','model s','model x','model y','mach-e','mache','e-tron','etron',
+  'kona electric','niro ev','ev6','id.4','id4','prologue','ariya','lyriq','equinox ev','blazer ev','silverado ev','taycan'];
+function isEV(v){
+  const text = ((v.make||'')+' '+(v.model||'')+' '+(v.style||'')).toLowerCase();
+  return EV_KEYWORDS.some(k=>text.includes(k));
+}
+let cpsTier = 'icon';
+
+const DEFAULT_INVENTORY = [
+["9402",2024,"Dodge","Hornet","R/T EAWD",20010,19450,25325,18460,21025,26275,21009],
+["8995",2024,"Honda","Prologue","EX AWD",13706,23775,24925,23150,24775,33500,26264],
+["9539",2024,"Hyundai","Elantra","SEL",60007,16475,19050,15620,16850,19999,17095],
+["9498",2023,"Chevrolet","Malibu","4dr Sdn 1LT",90512,13075,16775,13270,14150,17800,14651],
+["9502A",2023,"Ford","Explorer","Limited 4WD",68159,28100,31775,26030,27150,null,29050],
+["9013",2023,"Kia","Carnival","LX Seat Package FWD",31196,26950,28200,27760,28225,30799,26638],
+["8190",2023,"Kia","Rio","LX IVT",53310,11925,14350,12410,12200,21500,9266],
+["9535",2023,"Kia","Sorento","LX AWD",76950,19375,20850,18970,20075,24900,20428],
+["9509",2023,"Subaru","Forester","Premium CVT",91565,20950,24850,19540,18700,24875,21841],
+["7879",2022,"Chevrolet","Malibu","4dr Sdn LS w/1LS",47940,14625,18750,15530,15500,27899,8835],
+["9540",2022,"Ford","Escape","SE FWD",84266,13675,17250,11030,11550,17900,15082],
+["9468",2022,"Hyundai","Ioniq 5","SE AWD",90833,13950,19200,15650,12625,null,16023],
+["9511",2022,"Jeep","Renegade","Sport 4x4",22652,17525,19725,15560,17625,19999,17826],
+["9536",2022,"Kia","Soul","LX",71010,11350,15650,11740,11925,16900,10883],
+["9544",2022,"Nissan","Pathfinder","SV 4WD",125495,17950,20000,15600,16425,21900,17876],
+["9543",2022,"Nissan","Sentra","S CVT",103616,10000,13250,10010,9100,14897,11751],
+["9522",2022,"Toyota","Corolla Cross","LE 2WD",116324,15875,18575,15270,13300,18900,15659],
+["9526",2021,"Hyundai","Elantra","N Line Manual",75974,14100,17000,15420,12900,18499,16105],
+["9493",2021,"Jeep","Grand Cherokee L","Limited 4x4",135712,19225,24175,15182,15525,24900,20240],
+["9497",2021,"Jeep","Renegade","Sport 4x4",26160,15800,17850,15510,15375,19700,17932],
+["9496",2020,"Chevrolet","Equinox","4d SUV FWD LT w/1LT",75005,13325,17650,14490,13600,18600,15462],
+["9427",2020,"Chevrolet","Trax","4d SUV FWD LT",105439,7250,9625,8490,7200,13900,11034],
+["9465",2020,"Ford","Edge","4d SUV AWD SEL",78560,13425,16375,14100,14600,18870,16248],
+["9529",2020,"Ford","Escape Hybrid","4d SUV AWD SE Sport",109215,10825,14900,9970,10875,null,11351],
+["9542",2020,"Nissan","Kicks","4d SUV FWD SV",102430,7675,11350,5785,7975,13800,9646],
+["9516",2020,"Nissan","Rogue","4d SUV FWD SV",58491,15200,18625,14130,15000,19987,17817],
+["9524",2020,"Ram","1500 Classic","",93498,15800,20725,17310,null,21900,18093],
+["9449",2019,"Chevrolet","Equinox","4d SUV FWD LT w/1LT",107620,9050,11975,10060,9775,16900,14554],
+["9518",2019,"Subaru","Crosstrek","",85520,13950,18625,14380,null,18799,16839],
+["9534",2019,"Volkswagen","Jetta","4d Sedan 1.4T R-Line",76950,12400,14350,12840,11625,16739,13507],
+["9527",2019,"Volkswagen","Tiguan","4d SUV S 4Motion",85586,10675,12325,11270,10875,null,10855],
+["9477",2018,"Ford","Fusion","4d Sedan SE 2.5L",73327,9850,13025,11275,8975,15900,13196],
+["9541",2017,"Ford","Explorer","4d SUV FWD Ecoboost",93108,9700,11675,9020,7525,15899,11601],
+["9530",2017,"Honda","HR-V","4d SUV AWD LX",140447,9225,11100,9290,8075,null,9887],
+["9525",2017,"Jeep","Renegade","4d SUV 4WD Sport",105374,7850,8500,6670,6250,null,9670],
+["9547",2017,"Nissan","Rogue","SV",136401,6200,9025,4490,6600,null,7182],
+["9533",2017,"Toyota","Camry Hybrid","4d Sedan XLE",89473,16450,18850,17750,13400,19678,17217],
+["16",2016,"Jeep","Wrangler Unlimited","4d Convertible Sport",111541,14175,15600,10920,12425,17900,15001],
+["9538",2016,"Nissan","Frontier","S",90366,12600,15950,12960,10200,null,14045],
+["9507",2016,"Toyota","RAV4","4d SUV FWD LE",134415,11550,13225,11990,10225,15800,13850],
+["8641",2015,"Ford","Transit 350 Passenger Wagon","Low Roof Wagon XLT",92196,15450,20525,16383,15600,19499,16503],
+["9515",2015,"Jeep","Wrangler Unlimited","4d Convertible Sahara",73297,19375,20550,17360,14800,21499,16507],
+["9517",2015,"Nissan","Juke","4d SUV AWD SV",87808,8463,10513,7266,6175,13900,9603],
+["9537",2015,"Volkswagen","Passat","4d Sedan 1.8T SEL Premium PZEV",109021,8063,12513,6360,6100,null,8800],
+["9528",2014,"Buick","Enclave","4d SUV AWD Premium",133672,6175,8375,5895,8200,null,7095],
+["9548",2014,"Ford","Escape","4d SUV FWD S",117135,5775,7150,4285,3900,null,5894],
+["9531",2014,"Nissan","Rogue","S",90240,8550,10425,5365,5375,null,7025],
+["9486A",2013,"Hyundai","Sonata","GLS",150000,4000,7350,3650,3425,null,1250],
+["9546",2012,"Toyota","Avalon","BASE",139624,10225,12325,8955,null,null,7092],
+["9545",2011,"Honda","CR-V","4d SUV 4WD LX",115086,9038,10963,7030,6525,null,7683],
+["9340A",2009,"Pontiac","G6","4d Sedan SE 3.5L (2009.5)",105375,null,null,null,null,null,3000],
+["9357",2009,"Toyota","Matrix","4d Sedan 5spd",146182,4825,8100,4425,3150,12495,8707],
+["9394A",2008,"Subaru","Impreza","4d Hatchback 2.5i Auto",152867,3650,5900,2005,2725,null,4679],
+["9488A",2007,"Honda","Accord Sedan","4d EX-L V6 Auto",94221,5850,8350,5165,4400,9900,8959]
+].map(r => ({
+  stock:r[0], year:r[1], make:r[2], model:r[3], style:r[4], mileage:r[5],
+  nadaT:r[6], nadaRetail:r[7], kbbL:r[8], bbWhClean:r[9], salePrice:r[10], totalCost:r[11]
+}));
+
+// Storage abstraction: uses Claude's window.storage when available (so this
+// still works for testing/dev inside Claude), and falls back to calling
+// /api/{key} — a backend endpoint you provide when hosting elsewhere, e.g.
+// a Cloudflare Pages Function backed by KV. See DEPLOY.md.
+async function storageGet(key){
+  if(window.storage){
+    try{ const r = await window.storage.get(key, true); return r ? r.value : null; }catch(e){ return null; }
+  }
+  try{
+    const r = await fetch('/api/'+key);
+    if(!r.ok) return null;
+    const data = await r.json();
+    return data.value ?? null;
+  }catch(e){ return null; }
+}
+async function storageSet(key, value){
+  if(window.storage){
+    try{ await window.storage.set(key, value, true); }catch(e){}
+    return;
+  }
+  try{
+    await fetch('/api/'+key, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({value}) });
+  }catch(e){}
+}
+
+let inventory = DEFAULT_INVENTORY;
+let bvMethod = 'highest';
+let hasTrade = false;
+
+(async function loadInventory(){
+  try{
+    const val = await storageGet('inventory');
+    if(val) inventory = JSON.parse(val);
+  }catch(e){ /* no stored inventory yet, use default */ }
+})();
+
+(async function loadSettings(){
+  try{
+    const val = await storageGet('feeSettings');
+    if(val) applySettings(JSON.parse(val));
+  }catch(e){ /* no stored settings yet, use factory defaults */ }
+  populateSettingsForm();
+  updateFeeMeta();
+  buildAssumptionsText();
+})();
+
+function applySettings(s){
+  CONST.DOC_FEE = s.DOC_FEE; CONST.SALES_TAX = s.SALES_TAX_PCT/100; CONST.BIZ_TAX = s.BIZ_TAX_PCT/100;
+  CONST.TITLE = s.TITLE; CONST.REG = s.REG; CONST.TAG = s.TAG; CONST.ONLINE_FILING = s.ONLINE_FILING; CONST.SC_TAX = s.SC_TAX_PCT/100;
+  FM_FEES.PROCESSING = s.FM_PROCESSING; FM_FEES.VSI = s.FM_VSI;
+  CPS_FEES.ASSIGNMENT = s.CPS_ASSIGNMENT;
+}
+
+function populateSettingsForm(){
+  document.getElementById('setDocFee').value = CONST.DOC_FEE;
+  document.getElementById('setTitle').value = CONST.TITLE;
+  document.getElementById('setReg').value = CONST.REG;
+  document.getElementById('setTag').value = CONST.TAG;
+  document.getElementById('setOnlineFiling').value = CONST.ONLINE_FILING;
+  document.getElementById('setSalesTax').value = +(CONST.SALES_TAX*100).toFixed(3);
+  document.getElementById('setBizTax').value = +(CONST.BIZ_TAX*100).toFixed(3);
+  document.getElementById('setScTax').value = +(CONST.SC_TAX*100).toFixed(3);
+  document.getElementById('setFmProcessing').value = FM_FEES.PROCESSING;
+  document.getElementById('setFmVsi').value = FM_FEES.VSI;
+  document.getElementById('setCpsAssignment').value = CPS_FEES.ASSIGNMENT;
+}
+
+async function saveSettings(){
+  const s = {
+    DOC_FEE: parseFloat(document.getElementById('setDocFee').value)||0,
+    SALES_TAX_PCT: parseFloat(document.getElementById('setSalesTax').value)||0,
+    BIZ_TAX_PCT: parseFloat(document.getElementById('setBizTax').value)||0,
+    TITLE: parseFloat(document.getElementById('setTitle').value)||0,
+    REG: parseFloat(document.getElementById('setReg').value)||0,
+    TAG: parseFloat(document.getElementById('setTag').value)||0,
+    ONLINE_FILING: parseFloat(document.getElementById('setOnlineFiling').value)||0,
+    SC_TAX_PCT: parseFloat(document.getElementById('setScTax').value)||0,
+    FM_PROCESSING: parseFloat(document.getElementById('setFmProcessing').value)||0,
+    FM_VSI: parseFloat(document.getElementById('setFmVsi').value)||0,
+    CPS_ASSIGNMENT: parseFloat(document.getElementById('setCpsAssignment').value)||0
+  };
+  applySettings(s);
+  try{ await storageSet('feeSettings', JSON.stringify(s)); }catch(e){}
+  updateFeeMeta();
+  buildAssumptionsText();
+  const lenderNow = document.getElementById('lender').value;
+  if(lenderNow==='fm') document.getElementById('bankFee').value = FM_FEES.PROCESSING;
+  if(lenderNow==='cps') document.getElementById('bankFee').value = CPS_FEES.ASSIGNMENT;
+  const note = document.getElementById('settingsSavedNote');
+  note.style.display = 'block';
+  setTimeout(()=>{ note.style.display='none'; }, 2500);
+}
+
+function restoreDefaultSettings(){
+  applySettings({
+    DOC_FEE:FACTORY_DEFAULTS.DOC_FEE, SALES_TAX_PCT:FACTORY_DEFAULTS.SALES_TAX_PCT, BIZ_TAX_PCT:FACTORY_DEFAULTS.BIZ_TAX_PCT,
+    TITLE:FACTORY_DEFAULTS.TITLE, REG:FACTORY_DEFAULTS.REG, TAG:FACTORY_DEFAULTS.TAG, ONLINE_FILING:FACTORY_DEFAULTS.ONLINE_FILING,
+    SC_TAX_PCT:FACTORY_DEFAULTS.SC_TAX_PCT, FM_PROCESSING:FACTORY_DEFAULTS.FM_PROCESSING, FM_VSI:FACTORY_DEFAULTS.FM_VSI,
+    CPS_ASSIGNMENT:FACTORY_DEFAULTS.CPS_ASSIGNMENT
+  });
+  populateSettingsForm();
+}
+
+function updateFeeMeta(){
+  const el = document.getElementById('rptFeeMeta');
+  if(!el) return;
+  const fmt2 = n => '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  el.innerHTML = `
+    <div><b>Doc Fee</b> ${fmt2(CONST.DOC_FEE)}</div>
+    <div><b>Sales Tax</b> ${(CONST.SALES_TAX*100).toFixed(2)}% &nbsp; <b>Biz Lic Tax</b> ${(CONST.BIZ_TAX*100).toFixed(2)}%</div>
+    <div><b>Title</b> ${fmt2(CONST.TITLE)} &nbsp; <b>Reg</b> ${fmt2(CONST.REG)} &nbsp; <b>Tag</b> ${fmt2(CONST.TAG)} &nbsp; <b>Online Filing</b> ${fmt2(CONST.ONLINE_FILING)}</div>
+  `;
+}
+
+function buildAssumptionsText(){
+  const el = document.getElementById('assumpBody');
+  if(!el) return;
+  el.innerHTML = `
+      ASSUMPTIONS: Simple-interest, monthly payments, first payment 30 days from today. Sales tax (${(CONST.SALES_TAX*100).toFixed(2)}%) and Biz License tax (${(CONST.BIZ_TAX*100).toFixed(2)}%) basis = sale price net of trade allowance, plus the $${CONST.DOC_FEE} doc fee. Service Contract taxed separately at half rate (${(CONST.SC_TAX*100).toFixed(3)}%); GAP is not taxed.
+      Vehicles with no sale price on file but a usable book value get an estimated price (marked "est. from value") solved from the Front End %/Total Advance % caps against that value — defaulting to 100% of value if no advance % is set — then run through the same profitability structuring as priced vehicles. Vehicles with neither a sale price nor a usable book value still show "NO FIT".
+      Front End = sale price + $${CONST.DOC_FEE} doc fee − down − trade equity. Total Advance = full amount financed including taxes, title/reg/doc fees, and optional Service Contract / GAP if included (the bank DFI fee is NOT financed — it's deducted from front-end gross instead).
+      Trade-Ins: Trade Equity (Allowance − Payoff) is treated as additional down payment for both Front End and Total Advance — positive equity reduces the amount that needs to be advanced/financed, negative equity (upside-down trade) increases it. Separately, if an ACV is entered and differs from the Allowance, the difference (ACV − Allowance) is booked straight to Front-End Gross: an over-allowance (ACV below Allowance) is a cost to the deal, an under-allowance (ACV above Allowance) is a gain. ACV only affects gross if entered — leave it at $0 to skip this adjustment.
+      Vehicles are no longer flat approved/declined: if a deal fails front-end %, total advance %, or customer max payment, the tool automatically lowers the sale price (never raises it) until it clears those checks, stopping at the point where Total Gross would hit $0. "ADJUSTED" = profitable only below list price; "UNPROFITABLE" = the only price that clears the bank/payment limits no longer turns a profit; "NO STRUCTURE" = a non-price issue (mileage, missing value, term grid) blocks it regardless of price.
+      Rate Reserve (dealer participation) is added to Total Gross when used: either a flat % of amount financed, or the rate spread (APR minus Buy Rate, capped at Max Markup) times the dealer's split — both editable, defaults are typical industry figures, not guarantees from any lender.
+      F&M Bank: book value is locked to NADA Retail; term is auto-selected from F&M's published grid by model year (2020+ → 72mo, 2019 & older → 66mo); the $${FM_FEES.PROCESSING} processing fee defaults into Bank Fee (deducted from front-end gross) and a $${FM_FEES.VSI} VSI charge is automatically financed into the deal. F&M's buy rate and LTV grids are score-tier based — APR and advance % are still entered manually by staff using this tool as guidance, not pulled automatically from a credit score.
+      Term is auto-selected per vehicle from Ally's Consumer Terms grid: New/CSU–2021 → 84mo; 2020–2016 → 75mo (requires amount financed &gt;$5,000 and mileage &lt;100,000); 2015–2014 → 63mo (S–B tier only — tier not collected, verify manually); pre-2014 not eligible.
+      CPS — Consumer Portfolio Services: book value is locked to the highest of the checked sources. Select a credit tier (ICON+, Upper/Meta-Pref-SUAL, Mid/ALPL-Alpha, Lower/STD-Delta-FTB); APR and Total Advance % auto-fill to that tier's published floor/cap and are editable — CPS states rates and fees "vary" heavily by actual credit profile, so treat these as starting points, not approvals. A $${CPS_FEES.ASSIGNMENT} assignment fee defaults into Bank Fee; ICON+'s $100 program fee and other tiers' variable/credit fees are NOT calculated automatically. Max amount financed is capped by tier ($75k ICON+/$55k Upper/$45k Mid/$35k Lower, $5k minimum, $7.5k for ICON+). Term is auto-selected from CPS's mileage-based grid, which differs for ICON+ vs. the other three tiers (78mo/75mo need a higher tier plus an amount-financed floor). Vehicles must be 15 model years or newer for ICE, or 4 years or newer for EV — EV status is guessed from make/model keywords and should be verified. GAP ($${CPS_BACKEND_CAP.GAP.toLocaleString()}), Service Contract ($${CPS_BACKEND_CAP.SC.toLocaleString()}), and combined back-end (50% of value or $${CPS_BACKEND_CAP.COMBINED_FLAT.toLocaleString()}, whichever is less) caps are checked and flagged if exceeded. No make-specific rate extensions or limits were found in the CPS guidelines document supplied — only vehicle-type distinctions (ICE vs. EV age limits, light commercial vehicles, and an unspecified "Hot Vehicle" advance/fee program) were listed, so no make-based logic was added.
+      Click any row for the full breakdown including front-end and back-end gross. Figures are estimates for structuring only, not a credit decision.
+  `;
+}
+
+function toggleAssumptions(){
+  const body = document.getElementById('assumpBody');
+  const toggle = document.getElementById('assumpToggle');
+  const showing = body.style.display !== 'none';
+  body.style.display = showing ? 'none' : 'block';
+  toggle.textContent = showing ? '▸ Show Assumptions' : '▾ Hide Assumptions';
+}
+
+function showPanelTab(tab){
+  const isDeal = tab==='deal';
+  document.getElementById('dealTab').style.display = isDeal ? 'block' : 'none';
+  document.getElementById('settingsTab').style.display = isDeal ? 'none' : 'block';
+  document.getElementById('tabBtnDeal').classList.toggle('active', isDeal);
+  document.getElementById('tabBtnSettings').classList.toggle('active', !isDeal);
+}
+
+onLenderChange();
+
+document.querySelectorAll('.toggle button[data-method]').forEach(b=>{
+  b.onclick = ()=>{
+    document.querySelectorAll('.toggle button[data-method]').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active'); bvMethod = b.dataset.method;
+  };
+});
+document.querySelectorAll('.toggle button[data-trade]').forEach(b=>{
+  b.onclick = ()=>{
+    document.querySelectorAll('.toggle button[data-trade]').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active'); hasTrade = b.dataset.trade==='yes';
+    document.getElementById('tradeFields').style.display = hasTrade?'block':'none';
+  };
+});
+let hasSC=false, hasGap=false;
+document.querySelectorAll('.toggle button[data-sc]').forEach(b=>{
+  b.onclick = ()=>{
+    document.querySelectorAll('.toggle button[data-sc]').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active'); hasSC = b.dataset.sc==='yes';
+    document.getElementById('scFields').style.display = hasSC?'block':'none';
+  };
+});
+document.querySelectorAll('.toggle button[data-gap]').forEach(b=>{
+  b.onclick = ()=>{
+    document.querySelectorAll('.toggle button[data-gap]').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active'); hasGap = b.dataset.gap==='yes';
+    document.getElementById('gapFields').style.display = hasGap?'block':'none';
+  };
+});
+let reserveMethod='none';
+document.querySelectorAll('.toggle button[data-reserve]').forEach(b=>{
+  b.onclick = ()=>{
+    document.querySelectorAll('.toggle button[data-reserve]').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active'); reserveMethod = b.dataset.reserve;
+    document.getElementById('reserveFlatFields').style.display = reserveMethod==='flat'?'block':'none';
+    document.getElementById('reservePctFields').style.display = reserveMethod==='pct'?'block':'none';
+    document.getElementById('reserveSpreadFields').style.display = reserveMethod==='spread'?'block':'none';
+  };
+});
+
+function onLenderChange(){
+  const lender = document.getElementById('lender').value;
+  const isFM = lender==='fm';
+  const isCPS = lender==='cps';
+
+  document.getElementById('cpsTierField').style.display = isCPS ? 'block' : 'none';
+
+  document.querySelectorAll('.bvSrc').forEach(c=>{
+    if(isFM){ c.checked = (c.value==='nadaRetail'); c.disabled = true; }
+    else { c.disabled = false; }
+  });
+  document.querySelectorAll('.toggle button[data-method]').forEach(b=>{
+    if(isCPS){
+      b.disabled = true;
+      if(b.dataset.method==='highest'){ b.classList.add('active'); bvMethod='highest'; }
+      else b.classList.remove('active');
+    } else {
+      b.disabled = false;
+    }
+  });
+
+  const bvNote = document.getElementById('bvLenderNote');
+  if(isFM){ bvNote.style.display='block'; bvNote.textContent = 'F&M only accepts NADA Retail — locked.'; }
+  else if(isCPS){ bvNote.style.display='block'; bvNote.textContent = 'CPS uses the highest of the checked book values — method locked to Highest.'; }
+  else { bvNote.style.display='none'; }
+
+  if(isFM){
+    document.getElementById('termNoteText').textContent = "Auto-selected per vehicle from F&M's term grid by model year band (New–2025/2024–2023/2022–2020 → up to 72mo; 2019–older → up to 66mo). No manual entry.";
+  } else if(isCPS){
+    document.getElementById('termNoteText').textContent = "Auto-selected per vehicle from CPS's term/mileage grid, which differs by tier (ICON+ uses its own 84/78/75/72mo-by-mileage table; other tiers use a shared 78–24mo table where 78mo and 75mo need a higher tier plus an amount-financed floor). Vehicle must be 15 model years or newer (4 years for EVs — EV flag is a keyword heuristic, verify manually). No manual entry.";
+  } else {
+    document.getElementById('termNoteText').textContent = "Auto-selected per vehicle from Ally's term grid (model year, mileage <100k, amount financed >$5,000). No manual entry.";
+  }
+
+  const feeNote = document.getElementById('lenderFeeNote');
+  if(isFM){
+    document.getElementById('bankFee').value = FM_FEES.PROCESSING;
+    feeNote.style.display='block';
+    feeNote.textContent = `F&M: $${FM_FEES.PROCESSING} processing fee defaulted into Bank Fee above (deducted from front-end gross); a $${FM_FEES.VSI} VSI insurance charge is automatically financed into every deal.`;
+  } else if(isCPS){
+    document.getElementById('bankFee').value = CPS_FEES.ASSIGNMENT;
+    updateCPSDefaults();
+  } else {
+    feeNote.style.display='none';
+  }
+}
+
+function updateCPSDefaults(){
+  cpsTier = document.getElementById('cpsTier').value;
+  const d = CPS_TIERS[cpsTier];
+  document.getElementById('apr').value = d.apr;
+  document.getElementById('totalPct').value = d.ltv;
+  document.getElementById('frontPct').value = '';
+  const feeNote = document.getElementById('lenderFeeNote');
+  feeNote.style.display='block';
+  feeNote.textContent = `CPS ${d.label}: buy rate as low as ${d.apr.toFixed(2)}% and advance up to ${d.ltv}% of the highest book value are credit-based floors — adjust APR/Total Adv % to the actual approval. Max amount financed $${d.maxAmt.toLocaleString()} (min $${d.minAmt.toLocaleString()}). $${CPS_FEES.ASSIGNMENT} assignment fee defaulted into Bank Fee above. Program fees, "credit fees," and dealer participation vary by approval and are NOT calculated automatically — confirm against the CPS callback/approval.`;
+}
+
+function onCPSTierChange(){
+  updateCPSDefaults();
+}
+
+// RFC4180-style CSV tokenizer. Handles quoted fields containing commas,
+// embedded CR/LF (Promax headers/footers wrap column labels and totals
+// across lines inside quotes), and doubled "" escaped quotes.
+function parseCSVRows(text){
+  const rows = [];
+  let row = [], field = '', inQuotes = false;
+  for(let i=0;i<text.length;i++){
+    const ch = text[i];
+    if(inQuotes){
+      if(ch === '"'){
+        if(text[i+1] === '"'){ field += '"'; i++; }
+        else inQuotes = false;
+      } else {
+        field += ch;
+      }
+      continue;
+    }
+    if(ch === '"'){ inQuotes = true; continue; }
+    if(ch === ','){ row.push(field); field=''; continue; }
+    if(ch === '\r'){ if(text[i+1] === '\n') i++; row.push(field); field=''; rows.push(row); row=[]; continue; }
+    if(ch === '\n'){ row.push(field); field=''; rows.push(row); row=[]; continue; }
+    field += ch;
+  }
+  if(field.length || row.length){ row.push(field); rows.push(row); }
+  return rows.filter(r => r.some(c => c.trim() !== ''));
+}
+
+// Converts raw CSV rows into inventory objects, skipping the header row
+// (if present) and Promax footer/total rows (which have no valid Year).
+function buildInventoryFromRows(rows){
+  const clean = s => (s||'').replace(/\r\n|\r|\n/g,' ').replace(/\s+/g,' ').trim();
+  const num = v => { v = clean(v).replace(/,/g,''); return v==='' ? null : Number(v); };
+  const parsed = [];
+  let skipped = 0;
+  for(const raw of rows){
+    if(raw.length < 12) { skipped++; continue; }
+    const stock = clean(raw[0]);
+    const yearNum = parseInt(clean(raw[1]), 10);
+    // Header row (Year column isn't numeric) or footer/blank row (Year missing) — skip.
+    if(!stock || isNaN(yearNum)){ skipped++; continue; }
+    parsed.push({
+      stock, year: yearNum, make: clean(raw[2]), model: clean(raw[3]), style: clean(raw[4]),
+      mileage: num(raw[5]), nadaT: num(raw[6]), nadaRetail: num(raw[7]), kbbL: num(raw[8]),
+      bbWhClean: num(raw[9]), salePrice: num(raw[10]), totalCost: num(raw[11])
+    });
+  }
+  return { parsed, skipped };
+}
+
+async function saveInventory(parsed, sourceLabel){
+  inventory = parsed;
+  try{ await storageSet('inventory', JSON.stringify(inventory)); }catch(e){}
+  alert('Inventory updated: '+parsed.length+' vehicles from '+sourceLabel+'. (Saved for all staff using this tool.)');
+  document.getElementById('csvBox').style.display='none';
+  document.getElementById('csvFileConfirm').style.display='none';
+  document.getElementById('csvFileStatus').textContent='';
+  document.getElementById('csvFile').value='';
+}
+
+async function updateInventory(){
+  const txt = document.getElementById('csvText').value.trim();
+  if(!txt){ alert('Paste CSV first.'); return; }
+  const { parsed, skipped } = buildInventoryFromRows(parseCSVRows(txt));
+  if(!parsed.length){ alert('Could not parse rows — check format.'); return; }
+  await saveInventory(parsed, 'pasted CSV'+(skipped?` (skipped ${skipped} header/blank/total row${skipped===1?'':'s'})`:''));
+}
+
+let pendingFileInventory = null;
+let pendingFileName = '';
+
+function handleCSVFileUpload(event){
+  const file = event.target.files && event.target.files[0];
+  if(!file) return;
+  pendingFileName = file.name;
+  document.getElementById('csvFileStatus').textContent = 'Reading '+file.name+'...';
+  const reader = new FileReader();
+  reader.onload = e => {
+    const { parsed, skipped } = buildInventoryFromRows(parseCSVRows(e.target.result));
+    const confirmBox = document.getElementById('csvFileConfirm');
+    const statusEl = document.getElementById('csvFileStatus');
+    if(!parsed.length){
+      statusEl.textContent = '';
+      confirmBox.style.display='block';
+      confirmBox.style.borderColor = '#c0392b';
+      confirmBox.innerHTML = `Could not parse any vehicle rows from <strong>${file.name}</strong> — check that it's a Promax inventory export with the same 12 columns.`;
+      pendingFileInventory = null;
+      return;
+    }
+    pendingFileInventory = parsed;
+    statusEl.textContent = '';
+    confirmBox.style.display='block';
+    confirmBox.style.borderColor = 'var(--gold)';
+    confirmBox.innerHTML = `Parsed <strong>${parsed.length}</strong> vehicle${parsed.length===1?'':'s'} from <strong>${file.name}</strong>`
+      + (skipped ? ` (skipped ${skipped} header/blank/total row${skipped===1?'':'s'}).` : '.')
+      + ` This will replace the current inventory for all staff using this tool.<br><br>`
+      + `<button class="updatebtn" onclick="confirmFileInventory()">Save Inventory</button> `
+      + `<button class="updatebtn" style="background:transparent;color:var(--ink-soft);" onclick="cancelFileInventory()">Cancel</button>`;
+  };
+  reader.onerror = () => {
+    document.getElementById('csvFileStatus').textContent = 'Could not read file — try again.';
+  };
+  reader.readAsText(file);
+}
+
+async function confirmFileInventory(){
+  if(!pendingFileInventory || !pendingFileInventory.length) return;
+  await saveInventory(pendingFileInventory, pendingFileName);
+  pendingFileInventory = null;
+}
+
+function cancelFileInventory(){
+  pendingFileInventory = null;
+  document.getElementById('csvFileConfirm').style.display='none';
+  document.getElementById('csvFile').value='';
+}
+
+// Evaluates the deal at a specific sale price. Returns calc object + array of reason strings.
+function evalAtPrice(lender, v, sale, value, down, hasTrade, tradeAllow, tradePayoff, bankFee, apr, frontPct, totalPct, maxPmt, scPrice, gapPrice, manualTerm){
+  const reasons = [];
+  const fixable = []; // reasons that improve if price drops further
+  const tradeEquity = hasTrade ? (tradeAllow - tradePayoff) : 0;
+  const taxableBase = Math.max(0, sale - (hasTrade?tradeAllow:0)) + CONST.DOC_FEE;
+  const salesTax = taxableBase*CONST.SALES_TAX;
+  const bizTax = taxableBase*CONST.BIZ_TAX;
+  const scTax = scPrice*CONST.SC_TAX;
+  const vsiFee = lender==='fm' ? FM_FEES.VSI : 0;
+  const fees = CONST.DOC_FEE + CONST.TITLE + CONST.REG + CONST.TAG + CONST.ONLINE_FILING + vsiFee;
+  const amtFinanced = sale - down - tradeEquity + salesTax + bizTax + scTax + fees + scPrice + gapPrice;
+  const frontEnd = sale + CONST.DOC_FEE - down - tradeEquity;
+
+  let termInfo;
+  if(manualTerm!=null && manualTerm>0){
+    const cap = selectTerm(lender, v, amtFinanced);
+    const lenderLabel = lender==='fm' ? 'F&M' : lender==='cps' ? 'CPS' : 'Ally';
+    termInfo = {term:manualTerm, note: (cap.term!=null && manualTerm>cap.term)
+      ? `Manually overridden to ${manualTerm}mo \u2014 exceeds ${lenderLabel} published cap of ${cap.term}mo for this vehicle`
+      : 'Manually overridden term'};
+  } else {
+    termInfo = selectTerm(lender, v, amtFinanced);
+  }
+  let payment=null, totalInterest=null;
+  if(termInfo.term==null){
+    reasons.push(termInfo.reason); // mileage/term-grid issues are NOT fixable by lowering price
+  } else {
+    const r = apr/100/12, n = termInfo.term;
+    payment = r===0 ? amtFinanced/n : amtFinanced*r/(1-Math.pow(1+r,-n));
+    totalInterest = payment*n - amtFinanced;
+  }
+  if(value!=null){
+    if(frontPct && frontEnd > value*frontPct/100){ reasons.push('front end exceeds '+frontPct+'%'); fixable.push('front'); }
+    if(totalPct && amtFinanced > value*totalPct/100){ reasons.push('total advance exceeds '+totalPct+'%'); fixable.push('total'); }
+  }
+  if(payment!=null && payment > maxPmt){ reasons.push('payment over customer max'); fixable.push('pmt'); }
+
+  if(lender==='cps'){
+    const t = CPS_TIERS[cpsTier];
+    if(amtFinanced > t.maxAmt){ reasons.push(`amount financed exceeds CPS ${t.label} cap of $${t.maxAmt.toLocaleString()}`); fixable.push('cpsmax'); }
+    if(amtFinanced < t.minAmt){ reasons.push(`amount financed below CPS minimum of $${t.minAmt.toLocaleString()}`); } // not fixable by lowering price further
+    if(gapPrice > CPS_BACKEND_CAP.GAP){ reasons.push(`GAP exceeds CPS $${CPS_BACKEND_CAP.GAP.toLocaleString()} cap (or state max)`); }
+    if(scPrice > CPS_BACKEND_CAP.SC){ reasons.push(`Service Contract exceeds CPS $${CPS_BACKEND_CAP.SC.toLocaleString()} cap`); }
+    if(value!=null){
+      const combinedCap = Math.min(value*0.5, CPS_BACKEND_CAP.COMBINED_FLAT);
+      if((scPrice+gapPrice) > combinedCap){ reasons.push('SC + GAP exceed CPS back-end cap (50% of value or $4,400, whichever is less)'); }
+    }
+  }
+
+  return {sale, amtFinanced, frontEnd, payment, totalInterest, term:termInfo.term, termNote:termInfo.note,
+    salesTax, bizTax, scTax, fees, vsiFee, tradeEquity, reasons, onlyFixable: reasons.length>0 && reasons.length===fixable.length};
+}
+
+// Searches downward from list price for the highest price that clears all checks, never above list.
+// When a vehicle has no sale price on file, derive a synthetic starting price from the book value
+// using the same advance-%/tax/fee formula the rest of the tool uses, so it can still be evaluated
+// instead of being skipped. Binary-searches the highest price that satisfies Front End % / Total Adv %
+// against the book value; if neither % is set, defaults to 100% of book value as the asking price.
+function deriveStartPrice(lender, v, value, down, hasTrade, tradeAllow, tradePayoff, frontPct, totalPct, scPrice, gapPrice){
+  if(value==null) return null;
+  if(!frontPct && !totalPct) return Math.floor(value/50)*50;
+  const vsiFee = lender==='fm' ? FM_FEES.VSI : 0;
+  const fees = CONST.DOC_FEE + CONST.TITLE + CONST.REG + CONST.TAG + CONST.ONLINE_FILING + vsiFee;
+  function meets(sale){
+    const tradeEquity = hasTrade ? (tradeAllow-tradePayoff) : 0;
+    const taxableBase = Math.max(0, sale-(hasTrade?tradeAllow:0)) + CONST.DOC_FEE;
+    const salesTax = taxableBase*CONST.SALES_TAX;
+    const bizTax = taxableBase*CONST.BIZ_TAX;
+    const scTax = scPrice*CONST.SC_TAX;
+    const amtFinanced = sale - down - tradeEquity + salesTax + bizTax + scTax + fees + scPrice + gapPrice;
+    const frontEnd = sale + CONST.DOC_FEE - down - tradeEquity;
+    if(frontPct && frontEnd > value*frontPct/100) return false;
+    if(totalPct && amtFinanced > value*totalPct/100) return false;
+    return true;
+  }
+  let lo=0, hi=value*2.5;
+  for(let i=0;i<40;i++){
+    const mid=(lo+hi)/2;
+    if(meets(mid)) lo=mid; else hi=mid;
+  }
+  return Math.max(0, Math.floor(lo/50)*50);
+}
+
+// Searches downward from list price for the highest price that clears all checks, never above list.
+// tradeAcv, when entered and different from the trade allowance, is a fixed (price-independent) gross
+// adjustment — an over-allowance (ACV < allowance) is a cost, an under-allowance (ACV > allowance) is a
+// gain — so it shifts the breakeven floor the same way SC/GAP back-end profit does.
+function structurePrice(lender, v, listPrice, value, down, hasTrade, tradeAllow, tradePayoff, tradeAcv, bankFee, apr, frontPct, totalPct, maxPmt, scPrice, gapPrice, backGrossFixed, costOverride){
+  const STEP = 50;
+  const cost = costOverride!=null ? costOverride : v.totalCost;
+  const tradeAdj = (hasTrade && tradeAcv>0) ? (tradeAcv - tradeAllow) : 0;
+  const floor = cost!=null ? Math.max(0, cost - CONST.DOC_FEE + bankFee - backGrossFixed - tradeAdj) : 0;
+  let price = listPrice;
+  let result = evalAtPrice(lender, v, price, value, down, hasTrade, tradeAllow, tradePayoff, bankFee, apr, frontPct, totalPct, maxPmt, scPrice, gapPrice);
+  if(result.reasons.length===0) return {result, adjusted:false};
+  if(!result.onlyFixable) return {result, adjusted:false}; // can't be fixed by lowering price
+
+  while(result.reasons.length>0 && price-STEP >= floor){
+    price -= STEP;
+    result = evalAtPrice(lender, v, price, value, down, hasTrade, tradeAllow, tradePayoff, bankFee, apr, frontPct, totalPct, maxPmt, scPrice, gapPrice);
+    if(!result.onlyFixable && result.reasons.length>0) break; // hit a non-fixable wall (e.g. term/mileage) partway down
+  }
+  return {result, adjusted: price!==listPrice};
+}
+
+// Returns {term, note} or {term:null, reason} based on the selected lender's term grid
+function selectTerm(lender, v, amtFinanced){
+  if(lender==='fm') return selectTermFM(v);
+  if(lender==='cps') return selectTermCPS(v, amtFinanced);
+  return selectTermAlly(v, amtFinanced);
+}
+
+function selectTermAlly(v, amtFinanced){
+  const miles = v.mileage;
+  if(v.year>=2021){
+    return {term:84};
+  }
+  if(v.year>=2016){
+    if(amtFinanced!=null && miles!=null && amtFinanced>5000 && miles<100000){
+      return {term:75, note:'75mo requires AMF>$5,000 & mileage<100k (met)'};
+    }
+    return {term:null, reason: amtFinanced<=5000 ? '75mo needs amt financed > $5,000' : 'mileage \u2265100,000 disqualifies term'};
+  }
+  if(v.year>=2014){
+    return {term:63, note:'63mo limited to S\u2013B tier per guidelines (tier not collected \u2014 verify manually)'};
+  }
+  return {term:null, reason:'model year outside Ally term grid (pre-2014)'};
+}
+
+// F&M Bank term grid: New-2025/2024-2023/2022-2020 go up to 67-72mo bucket; 2019-older only up to 61-66mo.
+// Actual buy rate within that term comes from the bank's score-tier grid \u2014 staff select the rate manually.
+function selectTermFM(v){
+  if(v.year>=2020) return {term:72};
+  return {term:66, note:'2019 & older capped at 66mo per F&M "2019-Older" band (no 67-72 bucket published)'};
+}
+
+// CPS term/mileage grid, per Franchise Program Guidelines Exhibit 'A' (1/1/26).
+// Vehicle eligibility: 15 model years or newer for ICE, <=4 model years for EV (EV detected via keyword heuristic).
+// ICON+ has its own term-by-mileage table; all other tiers share one table where the two longest terms
+// (78mo/75mo) additionally require a higher tier and an amount-financed floor, falling back to 72mo otherwise.
+const CPS_CURRENT_YEAR = 2026;
+function selectTermCPS(v, amtFinanced){
+  const ev = isEV(v);
+  const maxAge = ev ? 4 : 15;
+  if(v.year==null || (CPS_CURRENT_YEAR - v.year) > maxAge){
+    return {term:null, reason: ev
+      ? 'exceeds CPS 4-year EV eligibility window (EV flagged by keyword match \u2014 verify vehicle type)'
+      : 'exceeds CPS 15-model-year eligibility window for ICE vehicles'};
+  }
+  const miles = v.mileage;
+  if(miles==null) return {term:null, reason:'no mileage on file for CPS term/mileage grid'};
+
+  if(cpsTier==='icon'){
+    if(miles<=80000)  return {term:84, note:'ICON+ grid: mileage \u2264 80,000'};
+    if(miles<=90000)  return {term:78, note:'ICON+ grid: mileage \u2264 90,000'};
+    if(miles<=95000)  return {term:75, note:'ICON+ grid: mileage \u2264 95,000'};
+    if(miles<=100000) return {term:72, note:'ICON+ grid: mileage \u2264 100,000'};
+    return {term:null, reason:'mileage exceeds ICON+ 100,000-mile cap'};
+  }
+
+  if(miles<=60000 && cpsTier==='upper' && amtFinanced!=null && amtFinanced>26000){
+    return {term:78, note:'78mo: Upper tier (Meta/Pref/SUAL) & amount financed > $26,000'};
+  }
+  if(miles<=65000 && (cpsTier==='upper'||cpsTier==='mid') && amtFinanced!=null && amtFinanced>21000){
+    return {term:75, note:'75mo: "Alpha and above" & amount financed > $21,000 (approximate \u2014 ALPL sub-tier not distinguished from Alpha, verify manually)'};
+  }
+  if(miles<=100000) return {term:72};
+  if(miles<=110000) return {term:66};
+  if(miles<=120000) return {term:60};
+  if(miles<=130000) return {term:48};
+  if(miles<=150000) return {term:36};
+  if(miles<=200000) return {term:24};
+  return {term:null, reason:'mileage exceeds CPS 200,000-mile cap'};
+}
+
+const SRC_LABELS = {nadaT:'NADA Clean Trade', nadaRetail:'NADA Retail', kbbL:'KBB Lending', bbWhClean:'Black Book'};
+
+function vehicleValue(v){
+  const wanted = Array.from(document.querySelectorAll('.bvSrc:checked')).map(c=>c.value);
+  const pairs = wanted.map(k=>({k, val:v[k]})).filter(p=>p.val!=null && !isNaN(p.val));
+  if(!pairs.length) return {value:null, source:null};
+  if(bvMethod==='average'){
+    const avg = pairs.reduce((a,p)=>a+p.val,0)/pairs.length;
+    return {value:avg, source:'Avg of '+pairs.map(p=>SRC_LABELS[p.k]).join(', ')};
+  }
+  const sorted = pairs.slice().sort((a,b)=> bvMethod==='highest' ? b.val-a.val : a.val-b.val);
+  return {value:sorted[0].val, source:SRC_LABELS[sorted[0].k]};
+}
+
+let lastRows = [];
+let lastParams = {};
+let sortState = {key:'totalGross', dir:'desc'};
+
+function runDeal(){
+  const lender = document.getElementById('lender').value;
+  const apr = parseFloat(document.getElementById('apr').value)||0;
+  const maxPmt = parseFloat(document.getElementById('maxPmt').value)||Infinity;
+  const down = parseFloat(document.getElementById('down').value)||0;
+  const bankFee = parseFloat(document.getElementById('bankFee').value)||0;
+  const frontPct = parseFloat(document.getElementById('frontPct').value)||null;
+  const totalPct = parseFloat(document.getElementById('totalPct').value)||null;
+  const tradeAllow = hasTrade ? (parseFloat(document.getElementById('tradeAllow').value)||0) : 0;
+  const tradePayoff = hasTrade ? (parseFloat(document.getElementById('tradePayoff').value)||0) : 0;
+  const tradeAcv = hasTrade ? (parseFloat(document.getElementById('tradeAcv').value)||0) : 0;
+  const scPrice = hasSC ? (parseFloat(document.getElementById('scPrice').value)||0) : 0;
+  const scCost = hasSC ? (parseFloat(document.getElementById('scCost').value)||0) : 0;
+  const gapPrice = hasGap ? (parseFloat(document.getElementById('gapPrice').value)||0) : 0;
+  const gapCost = hasGap ? (parseFloat(document.getElementById('gapCost').value)||0) : 0;
+  const reserveFlat = parseFloat(document.getElementById('reserveFlat').value)||0;
+  const reservePct = parseFloat(document.getElementById('reservePct').value)||0;
+  const buyRate = parseFloat(document.getElementById('buyRate').value)||0;
+  const maxMarkup = parseFloat(document.getElementById('maxMarkup').value)||0;
+  const dealerSplit = parseFloat(document.getElementById('dealerSplit').value)||0;
+
+  const custFirst = document.getElementById('custFirst').value.trim();
+  const custLast = document.getElementById('custLast').value.trim();
+  document.getElementById('rptName').textContent = (custFirst || custLast) ? `${custFirst} ${custLast}`.trim() : '—';
+  document.getElementById('rptLender').textContent = document.getElementById('lender').selectedOptions[0].text;
+  const fp = new Date(); fp.setDate(fp.getDate()+30);
+  document.getElementById('rptFirstPmt').textContent = fp.toLocaleDateString();
+
+  lastParams = {lender, down, hasTrade, tradeAllow, tradePayoff, tradeAcv, bankFee, frontPct, totalPct, maxPmt,
+    reserveMethod, reserveFlat, reservePct, buyRate, maxMarkup, dealerSplit};
+
+  lastRows = inventory.map(v=>{
+    const {value, source} = vehicleValue(v);
+    let listSale = v.salePrice;
+    let syntheticPrice = false;
+    const backGross = (scPrice-scCost) + (gapPrice-gapCost);
+
+    if(value!=null && listSale==null){
+      const derived = deriveStartPrice(lender, v, value, down, hasTrade, tradeAllow, tradePayoff, frontPct, totalPct, scPrice, gapPrice);
+      if(derived!=null && derived>0){ listSale = derived; syntheticPrice = true; }
+    }
+
+    if(value==null || listSale==null){
+      const reasons = [];
+      if(value==null) reasons.push('no book value');
+      if(listSale==null) reasons.push('no sale price');
+      return {v, value, source, sale:listSale, listSale, down, apr, term:null, status:'no-structure', reasons, frontGross:null, backGross,
+        scPrice, scCost, gapPrice, gapCost, totalGross:null, costOverride:v.totalCost,
+        original:{sale:listSale, down, apr, term:null, scPrice, scCost, gapPrice, gapCost, cost:v.totalCost}};
+    }
+
+    const {result, adjusted} = structurePrice(lender, v, listSale, value, down, hasTrade, tradeAllow, tradePayoff, tradeAcv, bankFee, apr, frontPct, totalPct, maxPmt, scPrice, gapPrice, backGross, v.totalCost);
+    const tradeAdj = (hasTrade && tradeAcv>0) ? (tradeAcv - tradeAllow) : 0;
+    const frontGross = (v.totalCost!=null) ? (result.sale - v.totalCost + CONST.DOC_FEE - bankFee + tradeAdj) : null;
+
+    let reserveGross = 0;
+    if(result.amtFinanced!=null){
+      if(reserveMethod==='flat') reserveGross = reserveFlat;
+      else if(reserveMethod==='pct') reserveGross = result.amtFinanced * reservePct/100;
+      else if(reserveMethod==='spread'){
+        const markup = Math.max(0, Math.min(apr-buyRate, maxMarkup));
+        reserveGross = result.amtFinanced * markup/100 * dealerSplit/100;
+      }
+    }
+
+    const totalGross = (frontGross!=null) ? frontGross + backGross + reserveGross : null;
+    const profitable = totalGross!=null && totalGross > 0;
+    let status;
+    if(result.reasons.length===0 && !adjusted) status = profitable!==false ? 'profitable' : 'unprofitable';
+    else if(result.reasons.length===0 && adjusted) status = profitable ? 'adjusted' : 'unprofitable';
+    else status = 'no-structure';
+
+    const row = {v, value, source, listSale, syntheticPrice, sale:result.sale, adjusted, amtFinanced:result.amtFinanced, frontEnd:result.frontEnd,
+      payment:result.payment, totalInterest:result.totalInterest, term:result.term, termNote:result.termNote,
+      salesTax:result.salesTax, bizTax:result.bizTax, scTax:result.scTax, fees:result.fees, vsiFee:result.vsiFee, tradeEquity:result.tradeEquity,
+      tradeAllow, tradePayoff, tradeAcv, tradeAdj, down, apr, bankFee, frontGross, scPrice, scCost, gapPrice, gapCost, costOverride:v.totalCost,
+      backGross, reserveGross, totalGross, status, reasons: result.reasons};
+    row.original = {sale:row.sale, down:row.down, apr:row.apr, term:row.term, scPrice:row.scPrice, scCost:row.scCost, gapPrice:row.gapPrice, gapCost:row.gapCost, cost:v.totalCost};
+    return row;
+  });
+
+  applySort();
+  renderTable();
+}
+
+function sortValue(r, key){
+  switch(key){
+    case 'stock': return r.v.stock;
+    case 'year': return r.v.year;
+    case 'miles': return r.v.mileage;
+    case 'sale': return r.sale!=null ? r.sale : r.listSale;
+    case 'value': return r.value;
+    case 'frontEnd': return r.frontEnd;
+    case 'amtFinanced': return r.amtFinanced;
+    case 'term': return r.term;
+    case 'payment': return r.payment;
+    case 'totalGross': return r.totalGross;
+    case 'status': return r.status;
+    default: return null;
+  }
+}
+
+function applySort(){
+  const {key, dir} = sortState;
+  const mult = dir==='asc' ? 1 : -1;
+  lastRows.sort((a,b)=>{
+    let va = sortValue(a,key), vb = sortValue(b,key);
+    const aNull = (va==null), bNull = (vb==null);
+    if(aNull && bNull) return 0;
+    if(aNull) return 1;  // nulls always sort to bottom regardless of direction
+    if(bNull) return -1;
+    if(typeof va==='string' || typeof vb==='string'){
+      va = String(va); vb = String(vb);
+      return va.localeCompare(vb) * mult;
+    }
+    return (va-vb) * mult;
+  });
+}
+
+function sortBy(key){
+  if(sortState.key===key){
+    sortState.dir = sortState.dir==='asc' ? 'desc' : 'asc';
+  } else {
+    sortState.key = key;
+    sortState.dir = (key==='stock' || key==='status') ? 'asc' : 'desc';
+  }
+  applySort();
+  renderTable();
+}
+
+const COLS = [
+  {key:'stock', label:'Stock'},
+  {key:'year', label:'Vehicle'},
+  {key:'miles', label:'Miles'},
+  {key:'sale', label:'Sale Price'},
+  {key:'value', label:'Value Used'},
+  {key:'frontEnd', label:'Front End'},
+  {key:'amtFinanced', label:'Total Advance'},
+  {key:'term', label:'Term'},
+  {key:'payment', label:'Payment'},
+  {key:'totalGross', label:'Gross'},
+  {key:'status', label:'Status'}
+];
+
+function renderTable(){
+  const arrow = key => sortState.key===key ? (sortState.dir==='asc' ? ' \u2191' : ' \u2193') : '';
+  let html = '<table><thead><tr>' + COLS.map(c=>
+    `<th onclick="sortBy('${c.key}')" style="cursor:pointer;user-select:none;${sortState.key===c.key?'color:var(--ink);':''}">${c.label}${arrow(c.key)}</th>`
+  ).join('') + '</tr></thead><tbody>';
+  lastRows.forEach((r,idx)=>{ html += buildRowHTML(r, idx); });
+  html += '</tbody></table>';
+  document.getElementById('resultsBody').innerHTML = html;
+}
+
+const stampMap = {profitable:['go','PROFITABLE'], adjusted:['go','ADJUSTED'], unprofitable:['no','UNPROFITABLE'], 'no-structure':['no','NO FIT']};
+function buildRowHTML(r, idx){
+  const fmt = n => n==null ? '—' : '$'+n.toLocaleString('en-US',{maximumFractionDigits:0});
+  const isOverride = !!(r.edited && r.reasons && r.reasons.length);
+  const [cls,label] = isOverride ? ['override','OVERRIDE'] : stampMap[r.status];
+  const priceCell = r.syntheticPrice
+    ? `${fmt(r.sale)} <span style="color:var(--gold);font-size:10px;">(est. from value)</span>`
+    : r.adjusted
+      ? `<span style="text-decoration:line-through;color:var(--ink-soft);">${fmt(r.listSale)}</span> ${fmt(r.sale)}`
+      : fmt(r.sale!=null?r.sale:r.listSale);
+  const pct = (num) => (num!=null && r.value) ? ' <span style="color:var(--ink-soft);">('+Math.round(num/r.value*100)+'%)</span>' : '';
+  const edited = r.edited ? ' <span style="color:var(--gold);font-size:10px;">(edited)</span>' : '';
+  const rowClass = (r.status==='profitable'||r.status==='adjusted'||isOverride) ? '' : 'declined';
+  return `<tr class="${rowClass}" onclick="showDetail(${idx})" style="cursor:pointer;">
+      <td>${r.v.stock}</td>
+      <td class="veh">${r.v.year} ${r.v.make} ${r.v.model}<br><span style="color:var(--ink-soft);font-size:10.5px;">${r.v.style}</span></td>
+      <td>${r.v.mileage? r.v.mileage.toLocaleString():'—'}</td>
+      <td>${priceCell}${edited}</td>
+      <td>${fmt(r.value)}${r.source?`<br><span style="color:var(--ink-soft);font-size:10px;">${r.source}</span>`:''}</td>
+      <td>${fmt(r.frontEnd)}${pct(r.frontEnd)}</td>
+      <td>${fmt(r.amtFinanced)}${pct(r.amtFinanced)}</td>
+      <td>${r.term? r.term+'mo':'—'}</td>
+      <td>${r.payment? '$'+r.payment.toFixed(2):'—'}</td>
+      <td>${fmt(r.totalGross)}</td>
+      <td><span class="stamp ${cls}">${label}</span>
+        ${r.reasons&&r.reasons.length? `<div class="reasons${isOverride?' override':''}">`+(isOverride?'Exceeds guideline(s) — staff override: ':'')+r.reasons.join(', ')+'</div>':''}
+      </td>
+    </tr>`;
+}
+
+function printReport(){
+  const el = document.getElementById('printedStamp');
+  if(el) el.textContent = 'Printed ' + new Date().toLocaleString('en-US', {dateStyle:'medium', timeStyle:'short'});
+  window.print();
+}
+
+function refreshRow(idx){
+  const tr = document.querySelectorAll('#resultsBody table tbody tr')[idx];
+  if(tr) tr.outerHTML = buildRowHTML(lastRows[idx], idx);
+}
+
+let currentDetailIdx = null;
+
+function showDetail(idx){
+  currentDetailIdx = idx;
+  const r = lastRows[idx];
+  const fmt = n => n==null ? '—' : '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const labelMap = {profitable:['var(--stamp-green)','PROFITABLE'], adjusted:['var(--stamp-green)','ADJUSTED — PROFITABLE'], unprofitable:['var(--stamp-red)','UNPROFITABLE'], 'no-structure':['var(--stamp-red)','NO STRUCTURE FOUND']};
+  const isOverride = !!(r.edited && r.reasons && r.reasons.length);
+  const [color,label] = isOverride ? ['var(--gold)','STAFF OVERRIDE — EXCEEDS GUIDELINE(S)'] : labelMap[r.status];
+  const editedTag = r.edited ? ' <span style="color:var(--gold);">(edited)</span>' : '';
+  const inp = (id,val,step) => `<input id="${id}" type="number" ${step?`step="${step}"`:''} value="${val==null?'':val}" style="width:100%;padding:5px 7px;border:1px solid var(--paper-line);border-bottom:2px solid var(--ink);font-family:'IBM Plex Mono',monospace;font-size:12.5px;">`;
+
+  const body = `
+    <h2 style="font-family:'Fraunces',serif;margin:0 0 4px;">${r.v.year} ${r.v.make} ${r.v.model} <span style="color:var(--ink-soft);font-weight:400;font-size:16px;">— ${r.v.style}</span></h2>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);margin-bottom:14px;">Stock #${r.v.stock} · ${r.v.mileage? r.v.mileage.toLocaleString():'—'} mi · <span id="detailStatusLabel" style="color:${color}">${label}</span>${editedTag}</div>
+    <div id="detailReasons">${r.reasons&&r.reasons.length?`<div class="reasons${isOverride?' override':''}" style="margin-bottom:14px;">${isOverride?'The numbers below are calculated exactly as entered, but this structure exceeds: ':''}${r.reasons.join(', ')}${isOverride?' — confirm eligibility with the lender before proceeding.':''}</div>`:''}</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:10px;">
+      <div><label style="display:block;font-family:'IBM Plex Mono',monospace;font-size:9.5px;text-transform:uppercase;color:var(--ink-soft);margin-bottom:3px;">Sale Price</label>${inp('dSale', r.sale)}</div>
+      <div><label style="display:block;font-family:'IBM Plex Mono',monospace;font-size:9.5px;text-transform:uppercase;color:var(--ink-soft);margin-bottom:3px;">Down</label>${inp('dDown', r.down)}</div>
+      <div><label style="display:block;font-family:'IBM Plex Mono',monospace;font-size:9.5px;text-transform:uppercase;color:var(--ink-soft);margin-bottom:3px;">APR %</label>${inp('dApr', r.apr, '0.01')}</div>
+      <div><label style="display:block;font-family:'IBM Plex Mono',monospace;font-size:9.5px;text-transform:uppercase;color:var(--ink-soft);margin-bottom:3px;">Term (mo)</label>${inp('dTerm', r.term)}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:10px;">
+      <div><label style="display:block;font-family:'IBM Plex Mono',monospace;font-size:9.5px;text-transform:uppercase;color:var(--gold);margin-bottom:3px;">Vehicle Cost (this screen only — not saved to inventory)</label>${inp('dCost', r.costOverride)}</div>
+    </div>
+    <div style="font-size:10.5px;color:var(--ink-soft);margin-bottom:14px;">${r.syntheticPrice ? `No sale price was on file for this vehicle — $${r.listSale?.toLocaleString()} was estimated from book value using the advance % formula.` : `List price was ${fmt(r.listSale)}.`} Term auto-fills from the lender grid but can be overridden — exceeding the published cap will be flagged, not blocked. Vehicle cost defaults to the inventory file's Total Cost ($${r.v.totalCost!=null?r.v.totalCost.toLocaleString():'—'}) but can be adjusted here to test gross scenarios without touching the stored inventory.</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+      <fieldset style="border:1px dashed var(--paper-line);padding:10px;margin:0;">
+        <legend style="font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--gold);padding:0 4px;">Service Contract</legend>
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:6px;"><input type="checkbox" id="dHasSC" ${r.scPrice?'checked':''}> Include</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          <div><label style="font-size:9px;color:var(--ink-soft);">Price</label>${inp('dScPrice', r.scPrice||0)}</div>
+          <div><label style="font-size:9px;color:var(--ink-soft);">Cost</label>${inp('dScCost', r.scCost||0)}</div>
+        </div>
+      </fieldset>
+      <fieldset style="border:1px dashed var(--paper-line);padding:10px;margin:0;">
+        <legend style="font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--gold);padding:0 4px;">GAP</legend>
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:6px;"><input type="checkbox" id="dHasGap" ${r.gapPrice?'checked':''}> Include</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          <div><label style="font-size:9px;color:var(--ink-soft);">Price</label>${inp('dGapPrice', r.gapPrice||0)}</div>
+          <div><label style="font-size:9px;color:var(--ink-soft);">Cost</label>${inp('dGapCost', r.gapCost||0)}</div>
+        </div>
+      </fieldset>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-bottom:18px;">
+      <button onclick="recalcDetail()" style="flex:2;padding:10px;background:var(--stamp-green);color:#fff;border:none;font-family:'Fraunces',serif;font-weight:600;font-size:14px;cursor:pointer;">Recalculate</button>
+      <button onclick="resetDetail()" style="flex:1;padding:10px;background:transparent;border:1px solid var(--ink-soft);color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;cursor:pointer;">Reset</button>
+    </div>
+
+    <table style="margin-bottom:0;" id="detailTable">
+      ${detailTableRows(r)}
+    </table>
+    <div id="detailTermNote" style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-soft);margin-top:12px;">${r.termNote||''}</div>
+  `;
+  document.getElementById('modalBody').innerHTML = body;
+  document.getElementById('modalOverlay').style.display = 'flex';
+}
+
+function detailTableRows(r){
+  const fmt = n => n==null ? '—' : '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const tradeAdj = r.tradeAdj || 0;
+  return `
+      <tr><td style="border:none;">Book Value Used</td><td style="border:none;text-align:right;">${fmt(r.value)}${r.source?` <span style="color:var(--ink-soft);font-size:11px;">(${r.source})</span>`:''}</td></tr>
+      ${r.tradeAllow?`<tr><td style="border:none;">Trade Allowance</td><td style="border:none;text-align:right;">-${fmt(r.tradeAllow)}</td></tr>
+      <tr><td style="border:none;">Trade Payoff</td><td style="border:none;text-align:right;">+${fmt(r.tradePayoff)}</td></tr>
+      <tr><td style="border:none;">Trade Equity (Allowance − Payoff, treated as extra down)</td><td style="border:none;text-align:right;">${fmt(r.tradeEquity)}</td></tr>
+      ${r.tradeAcv? `<tr><td style="border:none;">Trade ACV</td><td style="border:none;text-align:right;">${fmt(r.tradeAcv)}</td></tr>
+      <tr><td style="border:none;">Trade Profit/Loss (ACV − Allowance, hits gross)</td><td style="border:none;text-align:right;color:${tradeAdj>=0?'var(--stamp-green)':'var(--stamp-red)'};">${tradeAdj>=0?'+':''}${fmt(tradeAdj)}</td></tr>` : ''}`:''}
+      <tr><td style="border:none;">Sales Tax (${(CONST.SALES_TAX*100).toFixed(2)}% incl. doc fee)</td><td style="border:none;text-align:right;">+${fmt(r.salesTax)}</td></tr>
+      <tr><td style="border:none;">Biz License Tax (${(CONST.BIZ_TAX*100).toFixed(2)}% incl. doc fee)</td><td style="border:none;text-align:right;">+${fmt(r.bizTax)}</td></tr>
+      <tr><td style="border:none;">Fees Financed (Doc $${CONST.DOC_FEE} + Title $${CONST.TITLE} + Reg $${CONST.REG} + Tag $${CONST.TAG} + Online Filing $${CONST.ONLINE_FILING}${r.vsiFee?` + VSI $${r.vsiFee}`:''})</td><td style="border:none;text-align:right;">+${fmt(CONST.DOC_FEE+CONST.TITLE+CONST.REG+CONST.TAG+CONST.ONLINE_FILING+(r.vsiFee||0))}</td></tr>
+      ${r.scPrice?`<tr><td style="border:none;">Service Contract</td><td style="border:none;text-align:right;">+${fmt(r.scPrice)}</td></tr>
+      <tr><td style="border:none;">Service Contract Tax (${(CONST.SC_TAX*100).toFixed(3)}%)</td><td style="border:none;text-align:right;">+${fmt(r.scTax)}</td></tr>`:''}
+      ${r.gapPrice?`<tr><td style="border:none;">GAP (no tax)</td><td style="border:none;text-align:right;">+${fmt(r.gapPrice)}</td></tr>`:''}
+      <tr style="font-weight:600;"><td style="border-top:2px solid var(--ink);">Total Advance (Amount Financed)</td><td style="border-top:2px solid var(--ink);text-align:right;">${fmt(r.amtFinanced)}${r.value?` <span style="font-weight:400;color:var(--ink-soft);">(${(r.amtFinanced/r.value*100).toFixed(1)}% of value)</span>`:''}</td></tr>
+      <tr><td style="border:none;">Front End (Price + Doc Fee − Down − Trade Equity)</td><td style="border:none;text-align:right;">${fmt(r.frontEnd)}${r.value?` <span style="color:var(--ink-soft);">(${(r.frontEnd/r.value*100).toFixed(1)}% of value)</span>`:''}</td></tr>
+      <tr><td style="border:none;">Term</td><td style="border:none;text-align:right;">${r.term? r.term+' months':'not eligible'}</td></tr>
+      <tr><td style="border:none;">APR</td><td style="border:none;text-align:right;">${r.apr}%</td></tr>
+      <tr style="font-weight:600;"><td style="border:none;">Monthly Payment</td><td style="border:none;text-align:right;">${r.payment? fmt(r.payment):'—'}</td></tr>
+      <tr><td style="border:none;">Total Interest</td><td style="border:none;text-align:right;">${fmt(r.totalInterest)}</td></tr>
+      <tr><td style="border-top:1px dashed var(--paper-line);">Vehicle Cost${r.costOverride!==r.v.totalCost?' <span style="color:var(--gold);font-size:10px;">(overridden this screen)</span>':''}</td><td style="border-top:1px dashed var(--paper-line);text-align:right;">-${fmt(r.costOverride)}</td></tr>
+      <tr><td style="border:none;">Bank Fee (DFI, charged to dealer)</td><td style="border:none;text-align:right;">-${fmt(r.bankFee)}</td></tr>
+      <tr><td style="border:none;">Front-End Gross (Sale − Vehicle Cost + Doc Fee − Bank Fee${tradeAdj?' + Trade Profit/Loss':''})</td><td style="border:none;text-align:right;">${fmt(r.frontGross)}</td></tr>
+      ${(r.scPrice||r.gapPrice)?`<tr><td style="border:none;">Back-End Gross (SC + GAP profit)</td><td style="border:none;text-align:right;">${fmt(r.backGross)}</td></tr>`:''}
+      ${r.reserveGross?`<tr><td style="border:none;">Rate Reserve (dealer participation)</td><td style="border:none;text-align:right;">${fmt(r.reserveGross)}</td></tr>`:''}
+      <tr style="font-weight:600;"><td style="border-top:1px solid var(--ink);">Total Gross</td><td style="border-top:1px solid var(--ink);text-align:right;color:${r.totalGross>0?'var(--stamp-green)':'var(--stamp-red)'};">${fmt(r.totalGross)}</td></tr>
+  `;
+}
+
+function recalcDetail(){
+  const idx = currentDetailIdx;
+  const r = lastRows[idx];
+  const v = r.v;
+  const p = lastParams;
+
+  const sale = parseFloat(document.getElementById('dSale').value)||0;
+  const down = parseFloat(document.getElementById('dDown').value)||0;
+  const apr = parseFloat(document.getElementById('dApr').value)||0;
+  const term = parseInt(document.getElementById('dTerm').value)||null;
+  const costInput = document.getElementById('dCost').value;
+  const cost = costInput===''? null : (parseFloat(costInput)||0);
+  const hasSCnow = document.getElementById('dHasSC').checked;
+  const hasGapNow = document.getElementById('dHasGap').checked;
+  const scPrice = hasSCnow ? (parseFloat(document.getElementById('dScPrice').value)||0) : 0;
+  const scCost = hasSCnow ? (parseFloat(document.getElementById('dScCost').value)||0) : 0;
+  const gapPrice = hasGapNow ? (parseFloat(document.getElementById('dGapPrice').value)||0) : 0;
+  const gapCost = hasGapNow ? (parseFloat(document.getElementById('dGapCost').value)||0) : 0;
+
+  const result = evalAtPrice(p.lender, v, sale, r.value, down, p.hasTrade, p.tradeAllow, p.tradePayoff, p.bankFee, apr, p.frontPct, p.totalPct, p.maxPmt, scPrice, gapPrice, term);
+
+  const backGross = (scPrice-scCost) + (gapPrice-gapCost);
+  const tradeAdj = (p.hasTrade && r.tradeAcv>0) ? (r.tradeAcv - p.tradeAllow) : 0;
+  const frontGross = (cost!=null) ? (result.sale - cost + CONST.DOC_FEE - p.bankFee + tradeAdj) : null;
+
+  let reserveGross = 0;
+  if(result.amtFinanced!=null){
+    if(p.reserveMethod==='flat') reserveGross = p.reserveFlat;
+    else if(p.reserveMethod==='pct') reserveGross = result.amtFinanced * p.reservePct/100;
+    else if(p.reserveMethod==='spread'){
+      const markup = Math.max(0, Math.min(apr-p.buyRate, p.maxMarkup));
+      reserveGross = result.amtFinanced * markup/100 * p.dealerSplit/100;
+    }
+  }
+  const totalGross = (frontGross!=null) ? frontGross + backGross + reserveGross : null;
+  const profitable = totalGross!=null && totalGross > 0;
+  const status = result.reasons.length===0 ? (profitable!==false?'profitable':'unprofitable') : 'no-structure';
+
+  Object.assign(r, {sale:result.sale, down, apr, term:result.term, termNote:result.termNote, amtFinanced:result.amtFinanced,
+    frontEnd:result.frontEnd, payment:result.payment, totalInterest:result.totalInterest, salesTax:result.salesTax,
+    bizTax:result.bizTax, scTax:result.scTax, fees:result.fees, vsiFee:result.vsiFee, tradeEquity:result.tradeEquity, tradeAdj,
+    scPrice, scCost, gapPrice, gapCost, costOverride:cost, frontGross, backGross, reserveGross, totalGross, status, reasons:result.reasons,
+    adjusted:false, edited:true});
+
+  showDetail(idx);
+  refreshRow(idx);
+}
+
+function resetDetail(){
+  const idx = currentDetailIdx;
+  const r = lastRows[idx];
+  Object.assign(r, r.original, {edited:false, costOverride:r.original.cost});
+  // re-run a full eval at the original sale price to restore all derived fields
+  const v = r.v, p = lastParams;
+  const result = evalAtPrice(p.lender, v, r.original.sale, r.value, r.original.down, p.hasTrade, p.tradeAllow, p.tradePayoff, p.bankFee, r.original.apr, p.frontPct, p.totalPct, p.maxPmt, r.original.scPrice, r.original.gapPrice, r.original.term);
+  const backGross = (r.original.scPrice-r.original.scCost) + (r.original.gapPrice-r.original.gapCost);
+  const tradeAdj = (p.hasTrade && r.tradeAcv>0) ? (r.tradeAcv - p.tradeAllow) : 0;
+  const frontGross = (r.original.cost!=null) ? (result.sale - r.original.cost + CONST.DOC_FEE - p.bankFee + tradeAdj) : null;
+  let reserveGross = 0;
+  if(result.amtFinanced!=null){
+    if(p.reserveMethod==='flat') reserveGross = p.reserveFlat;
+    else if(p.reserveMethod==='pct') reserveGross = result.amtFinanced * p.reservePct/100;
+    else if(p.reserveMethod==='spread'){
+      const markup = Math.max(0, Math.min(r.original.apr-p.buyRate, p.maxMarkup));
+      reserveGross = result.amtFinanced * markup/100 * p.dealerSplit/100;
+    }
+  }
+  const totalGross = (frontGross!=null) ? frontGross + backGross + reserveGross : null;
+  const profitable = totalGross!=null && totalGross > 0;
+  const status = result.reasons.length===0 ? (profitable!==false?'profitable':'unprofitable') : 'no-structure';
+  Object.assign(r, {amtFinanced:result.amtFinanced, frontEnd:result.frontEnd, payment:result.payment, totalInterest:result.totalInterest,
+    salesTax:result.salesTax, bizTax:result.bizTax, scTax:result.scTax, fees:result.fees, vsiFee:result.vsiFee, tradeEquity:result.tradeEquity, tradeAdj,
+    frontGross, backGross, reserveGross, totalGross, status, reasons:result.reasons, termNote:result.termNote});
+  showDetail(idx);
+  refreshRow(idx);
+}
+function closeDetail(){ document.getElementById('modalOverlay').style.display = 'none'; }
+</script>
+</body>
+</html>
